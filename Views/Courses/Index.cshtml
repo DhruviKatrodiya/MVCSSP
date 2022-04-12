@@ -1,0 +1,67 @@
+﻿@*@model IEnumerable<MVCEntityFrameAppCS.Models.Course>*@
+@model PagedList.IPagedList<MVCEntityFrameAppCS.Models.Course>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@*@using (Html.BeginForm())
+    {
+        //the following are search options
+
+        <b> Search Option: </b>
+        @Html.RadioButton("option", "CourseId",true) <b>CourseId</b>
+        @Html.RadioButton("option", "CourseName") <b> CourseName </b><br/>
+        @Html.TextBox("search") <input type="submit" name="search" value="Search" />
+    }*@
+
+@using (Html.BeginForm("Index", "Courses", FormMethod.Get))
+{
+    <p>
+        Search Name: @Html.TextBox("Search_Data", ViewBag.FilterValue as string)
+        <input type="submit" value="Find" />
+    </p>
+}
+
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("CourseName", "Index", new { Sorting_Order = ViewBag.SortingName, Filter_Value = ViewBag.FilterValue })
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>*@
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CourseId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.CourseId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CourseId })
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, Page_No => Url.Action("Index",
+    new { Page_No, Sorting_Order = ViewBag.CurrentSortOrder, Filter_Value = ViewBag.FilterValue }))
